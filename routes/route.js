@@ -46,9 +46,14 @@ router.get("/", (req, res) => {
 });
 
 router.get("/u", async (req, res) => {
-  await Admin.find()
-    .then((re) => res.send(re))
-    .catch((err) => res.send(err));
+  try {
+    let data = await Admin.find();
+    console.log("data");
+    res.send(data);
+  } catch (error) {
+    console.log("error");
+    res.send(error);
+  }
 });
 
 // router.get("/u/:id", async (req, res) =>
@@ -91,7 +96,7 @@ router.post("/login", async (req, res) => {
           httpOnly: true,
         });
         res.json({ ...userLogin.toObject(), token: token });
-        return res.status(200).json({ message: "Admin Login Successfully" });
+        // return res.status(200).json({ message: "Admin Login Successfully" });
       } else if (isMatch && userLogin.Role == "0") {
         const token = jwt.sign({ id: userLogin._id }, process.env.SecretKey, {
           expiresIn: "5 seconds",
@@ -103,7 +108,7 @@ router.post("/login", async (req, res) => {
           httpOnly: true,
         });
         res.json({ ...userLogin.toObject(), token: token });
-        return res.status(200).json({ message: "User Login Successfully" });
+        // return res.status(200).json({ message: "User Login Successfully" });
       }
     } else {
       return res.status(400).json({ message: "Email doesn't exist" });
@@ -245,7 +250,7 @@ router.put("/admin/updatemovies/:id", async (req, res) => {
 });
 
 router.post("/razorpay", async (req, res) => {
-  console.log(req.body);
+  console.log("razorpay", req.body);
   const { amount } = req.body;
   const payment_capture = 1;
   // const amount = 10000
